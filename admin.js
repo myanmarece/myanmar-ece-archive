@@ -14,7 +14,8 @@ document.addEventListener("DOMContentLoaded",()=>{
     e.preventDefault(); loginStatus.textContent="로그인 중...";
     const fd=new FormData(loginForm);
     try{
-      const res=await fetch(API_BASE+"/api/admin/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:fd.get("email"),password:fd.get("password")})});
+      const loginBody=new URLSearchParams({email:fd.get("email"),password:fd.get("password")});
+      const res=await fetch(API_BASE+"/api/admin/login",{method:"POST",body:loginBody});
       const data=await res.json().catch(()=>({}));
       if(!res.ok){loginStatus.textContent="로그인 실패: "+(data.error||res.status);return;}
       localStorage.setItem(SESSION_KEY,data.token); loginForm.reset(); loginStatus.textContent=""; showUpload();
