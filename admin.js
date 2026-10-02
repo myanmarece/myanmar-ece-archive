@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.querySelector("#loginForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     status.textContent = "로그인 중...";
-    const { error } = await client.auth.signInWithPassword({
+    let result;\n    try {\n      result = await Promise.race([client.auth.signInWithPassword({
       email: document.querySelector("#loginEmail").value,
       password: document.querySelector("#loginPassword").value
     });
