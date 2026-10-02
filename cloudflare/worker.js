@@ -61,3 +61,4 @@ export default {async fetch(request,env){
 
  return new Response("Not found",{status:404,headers:cors});
 }};
+// Cloudflare Git integration: automatic deployment enabled.
