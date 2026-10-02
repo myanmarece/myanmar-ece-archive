@@ -93,6 +93,7 @@ export default {
 
         if (file && typeof file.stream === "function" && file.size) {
           fileKey = id + "_" + file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+          if (!env.RESOURCES) throw new Error("R2 바인딩 RESOURCES가 없습니다.");
           await env.RESOURCES.put(fileKey, file.stream(), {
             httpMetadata: {
               contentType: file.type || "application/octet-stream"
@@ -101,6 +102,7 @@ export default {
           fileUrl = url.origin + "/files/" + encodeURIComponent(fileKey);
         }
 
+        if (!env.DB) throw new Error("D1 바인딩 DB가 없습니다.");
         await env.DB.prepare(
           "INSERT INTO resources (id,title,title_myanmar,description,audience,age,domain,language,resource_type,author,file_key,file_url) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)"
         ).bind(
