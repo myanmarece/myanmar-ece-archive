@@ -32,22 +32,9 @@
 <section class="grid" id="grid"></section>
 </main>
 <script>
-const data=[
-["유아를 위한 성경 이야기 수업안","성경 이야기를 유아의 눈높이에 맞게 구성한 수업 자료","성경적 유아교육","교사","5세","미얀마어","수업계획안","📖","pink"],
-["놀이 중심 유아교육 활동 모음","3–6세 유아를 위한 다양한 놀이 활동과 교사 가이드","수업·활동","교사","3세","미얀마어","PDF","🎨","mint"],
-["유아 관찰 및 평가 기초","유아의 놀이와 발달을 관찰하고 기록하는 방법","유아교육과 학생","학생","4세","영어","학습자료","🔎","blue"],
-["교실 환경 구성 가이드","유아의 자율성과 놀이를 지원하는 교실 환경 구성","교사 자료","교사","5세","한국어","교사 가이드","🏫","yellow"],
-["아동발달 핵심 개념","유아교육과 학생을 위한 발달이론 요약 자료","연구자료","학생","6세","영어","PPT","📚","lav"],
-["성품교육 활동 카드","유아와 함께 나눌 수 있는 성품 주제별 활동","자료실","공통","4세","미얀마어","플래시카드","⭐","blue"],
-["언어 발달 놀이 자료","말하기와 어휘 발달을 돕는 놀이 활동","수업·활동","교사","3세","미얀마어","워크시트","💬","pink"],
-["기독교 교사의 자기이해","교사의 소명과 관계를 돌아보는 교사교육 자료","성경적 유아교육","교사","6세","한국어","워크시트","♡","mint"],
-["유아교육과정 개론 요약","유아교육과정의 핵심 개념을 정리한 학생용 자료","유아교육과 학생","학생","5세","영어","PDF","📝","yellow"]
-];
-function render(){
- const q=document.querySelector("#q").value.toLowerCase().trim(), a=document.querySelector("#audience").value, age=document.querySelector("#age").value,d=document.querySelector("#domain").value,l=document.querySelector("#lang").value;
- const out=data.filter(x=>(!q||x.slice(0,3).join(" ").toLowerCase().includes(q))&&(!a||x[3]===a)&&(!age||x[4]===age)&&(!d||x[2]===d)&&(!l||x[5]===l));
- document.querySelector("#count").textContent=out.length+"개 자료";
- document.querySelector("#grid").innerHTML=out.length?out.map(x=>{const id=data.indexOf(x)+1;return '<a class="card" href="resource-detail.html?id='+id+'"><div class="thumb '+x[8]+'">'+x[7]+'</div><div class="body"><span class="tag">'+x[2]+'</span><h2>'+x[0]+'</h2><p>'+x[1]+'</p><div class="meta"><span>'+x[6]+' · '+x[5]+'</span><span>'+x[3]+' · '+x[4]+'</span></div></div></a>';}).join(''):'<div class="empty">조건에 맞는 자료가 없습니다.</div>';
-const preset=new URLSearchParams(location.search).get("domain"); if(preset){document.querySelector("#domain").value=preset;} render();
+const data=[];
+function render(){const q=document.querySelector("#q").value.toLowerCase().trim(),a=document.querySelector("#audience").value,age=document.querySelector("#age").value,d=document.querySelector("#domain").value,l=document.querySelector("#lang").value;const out=data.filter(x=>(!q||x.join(" ").toLowerCase().includes(q))&&(!a||x.audience===a)&&(!age||x.age===age)&&(!d||x.domain===d)&&(!l||x.language===l));document.querySelector("#count").textContent=out.length+"개 자료";document.querySelector("#grid").innerHTML=out.length?out.map(x=>'<a class="card" href="resource-detail.html?id='+encodeURIComponent(x.id)+'"><div class="thumb pink">📄</div><div class="body"><span class="tag">'+x.domain+'</span><h2>'+x.title+'</h2><p>'+x.description+'</p><div class="meta"><span>'+x.resource_type+' · '+x.language+'</span><span>'+x.audience+' · '+x.age+'</span></div></div></a>').join(""):'<div class="empty">조건에 맞는 자료가 없습니다.</div>';}
+const preset=new URLSearchParams(location.search).get("domain");if(preset)document.querySelector("#domain").value=preset;
 </script>
-<script>window.ECE_API_BASE="https://myanmar-ece-archive-api.myanmarece.workers.dev";</script><script src="resources.js"></script></body></html>
+<script>window.ECE_SHEET_ID="";window.ECE_SHEET_NAME="Resources";</script><script src="resources.js"></script>
+</body></html>
