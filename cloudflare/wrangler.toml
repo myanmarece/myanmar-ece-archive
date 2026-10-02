@@ -1,3 +1,4 @@
+# Cloudflare Worker deployment config
 name = "myanmar-ece-archive-api"
 main = "worker.js"
 compatibility_date = "2026-10-02"
