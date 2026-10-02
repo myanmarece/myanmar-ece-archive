@@ -5,6 +5,13 @@ export default {async fetch(request,env){
  const url=new URL(request.url);
  if(request.method==="OPTIONS")return new Response(null,{headers:cors});
 
+ if(url.pathname==="/api/admin/login"&&request.method==="POST"){
+  const body=await request.json().catch(()=>({}));
+  if(!body.email||!body.password)return json({error:"이메일과 비밀번호를 입력하세요."},400);
+  if(body.email!==env.ADMIN_EMAIL||body.password!==env.ADMIN_PASSWORD)return json({error:"이메일 또는 비밀번호가 올바르지 않습니다."},401);
+  return json({token:env.ADMIN_TOKEN});
+ }
+
  if(url.pathname.startsWith("/files/")&&request.method==="GET"){
   const key=decodeURIComponent(url.pathname.slice("/files/".length));
   if(!key)return new Response("Not found",{status:404,headers:cors});
