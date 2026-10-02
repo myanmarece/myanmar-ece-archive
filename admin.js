@@ -1,5 +1,6 @@
 const API_BASE = window.ECE_API_BASE || "";
 const SESSION_KEY="ece_admin_session";
+const ADMIN_AUTH_HEADER="Authorization";
 
 document.addEventListener("DOMContentLoaded",()=>{
   const loginPanel=document.querySelector("#loginPanel"), uploadPanel=document.querySelector("#uploadPanel");
@@ -30,7 +31,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     if(!token){showLogin();return;}
     try{
       const fd=new FormData(form);
-      const res=await fetch(API_BASE+"/api/resources",{method:"POST",body:(fd.append("admin_token",token),fd)});
+      const res=await fetch(API_BASE+"/api/resources",{method:"POST",headers:{[ADMIN_AUTH_HEADER]:"Bearer "+token},body:fd});
       const data=await res.json().catch(()=>({}));
       if(res.status===401){localStorage.removeItem(SESSION_KEY);status.textContent="세션이 만료되었습니다. 다시 로그인해 주세요.";showLogin();return;}
       if(!res.ok){status.textContent="자료 등록 실패: "+(data.error||res.status);return;}
