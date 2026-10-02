@@ -33,8 +33,8 @@ export default {async fetch(request,env){
  }
 
  if(url.pathname==="/api/resources"&&request.method==="POST"){
-  if((request.headers.get("Authorization")||"")!=="Bearer "+env.ADMIN_TOKEN)return json({error:"관리자 인증이 필요합니다."},401);
   const form=await request.formData();
+  if((form.get("admin_token")||"")!==env.ADMIN_TOKEN)return json({error:"관리자 인증이 필요합니다."},401);
   const file=form.get("file");
   const id=crypto.randomUUID();
   let fileKey=null,fileUrl=null;
