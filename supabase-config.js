@@ -1,1 +1,1 @@
-window.SUPABASE_CONFIG={url:"",anonKey:""};
+window.SUPABASE_CONFIG={url:"https://dzcxsjsvxkeymzeyeflu.supabase.co",anonKey:"sb_publishable_y7GiEe6SiE_3Ukg3zXBy9Q_ppB8TZae"};
