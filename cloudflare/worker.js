@@ -1,36 +1,24 @@
-export default {
-  async fetch(request, env) {
-    const url = new URL(request.url);
-    const cors = {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Headers": "Content-Type",
-      "Access-Control-Allow-Methods": "GET,POST,OPTIONS"
-    };
-    if (request.method === "OPTIONS") return new Response(null,{headers:cors});
-
-    if (url.pathname === "/api/resources" && request.method === "GET") {
-      const q = (url.searchParams.get("q") || "").trim();
-      let stmt;
-      if (q) {
-        stmt = env.DB.prepare(
-          "SELECT * FROM resources WHERE title LIKE ? OR title_myanmar LIKE ? OR description LIKE ? ORDER BY created_at DESC"
-        ).bind("%"+q+"%","%"+q+"%","%"+q+"%");
-      } else {
-        stmt = env.DB.prepare("SELECT * FROM resources ORDER BY created_at DESC");
-      }
-      const {results} = await stmt.all();
-      return Response.json(results,{headers:cors});
-    }
-
-    if (url.pathname === "/api/resources" && request.method === "POST") {
-      const body = await request.json();
-      const id = crypto.randomUUID();
-      await env.DB.prepare(
-        "INSERT INTO resources (id,title,title_myanmar,description,audience,age,domain,language,resource_type,author,institution,file_key,file_url,thumbnail_url,christian_relevance) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
-      ).bind(id,body.title,body.title_myanmar||null,body.description||null,body.audience||null,body.age||null,body.domain||null,body.language||null,body.resource_type||null,body.author||null,body.institution||null,body.file_key||null,body.file_url||null,body.thumbnail_url||null,body.christian_relevance?1:0).run();
-      return Response.json({id},{status:201,headers:cors});
-    }
-
-    return new Response("Not found",{status:404,headers:cors});
+const cors={"Access-Control-Allow-Origin":"*","Access-Control-Allow-Headers":"Content-Type, Authorization","Access-Control-Allow-Methods":"GET,POST,OPTIONS"};
+const json=(d,s=200)=>Response.json(d,{status:s,headers:cors});
+export default {async fetch(request,env){
+ const url=new URL(request.url);
+ if(request.method==="OPTIONS")return new Response(null,{headers:cors});
+ if(url.pathname==="/api/resources"&&request.method==="GET"){
+  const q=(url.searchParams.get("q")||"").trim();
+  const stmt=q?env.DB.prepare("SELECT * FROM resources WHERE title LIKE ? OR title_myanmar LIKE ? OR description LIKE ? ORDER BY created_at DESC").bind("%"+q+"%","%"+q+"%","%"+q+"%"):env.DB.prepare("SELECT * FROM resources ORDER BY created_at DESC");
+  const {results}=await stmt.all(); return json(results);
+ }
+ if(url.pathname==="/api/resources"&&request.method==="POST"){
+  if((request.headers.get("Authorization")||"")!=="Bearer "+env.ADMIN_TOKEN)return json({error:"관리자 인증이 필요합니다."},401);
+  const form=await request.formData(), file=form.get("file"), id=crypto.randomUUID();
+  let fileKey=null,fileUrl=null;
+  if(file&&typeof file.arrayBuffer==="function"&&file.size){
+   fileKey=id+"_"+file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+   await env.RESOURCES.put(fileKey,file.stream(),{httpMetadata:{contentType:file.type||"application/octet-stream"}});
+   fileUrl=env.PUBLIC_FILE_BASE?env.PUBLIC_FILE_BASE.replace(/\/$/,"")+"/"+encodeURIComponent(fileKey):null;
   }
-};
+  await env.DB.prepare("INSERT INTO resources (id,title,title_myanmar,description,audience,age,domain,language,resource_type,author,file_key,file_url) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)").bind(id,form.get("title"),form.get("title_myanmar")||null,form.get("description")||null,form.get("audience")||null,form.get("age")||null,form.get("domain")||null,form.get("language")||null,form.get("resource_type")||null,form.get("author")||null,fileKey,fileUrl).run();
+  return json({id},201);
+ }
+ return new Response("Not found",{status:404,headers:cors});
+}};
