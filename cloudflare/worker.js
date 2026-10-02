@@ -6,7 +6,15 @@ export default {async fetch(request,env){
  if(request.method==="OPTIONS")return new Response(null,{headers:cors});
 
  if(url.pathname==="/api/admin/login"&&request.method==="POST"){
-  const body=await request.json().catch(()=>({}));
+  const contentType=request.headers.get("Content-Type")||"";
+  let body={};
+  if(contentType.includes("application/x-www-form-urlencoded")){
+   const text=await request.text();
+   const p=new URLSearchParams(text);
+   body={email:p.get("email")||"",password:p.get("password")||""};
+  }else{
+   body=await request.json().catch(()=>({}));
+  }
   if(!body.email||!body.password)return json({error:"이메일과 비밀번호를 입력하세요."},400);
   if(body.email!==env.ADMIN_EMAIL||body.password!==env.ADMIN_PASSWORD)return json({error:"이메일 또는 비밀번호가 올바르지 않습니다."},401);
   return json({token:env.ADMIN_TOKEN});
@@ -34,7 +42,9 @@ export default {async fetch(request,env){
 
  if(url.pathname==="/api/resources"&&request.method==="POST"){
   const form=await request.formData();
-  if((form.get("admin_token")||"")!==env.ADMIN_TOKEN)return json({error:"관리자 인증이 필요합니다."},401);
+  const authHeader=request.headers.get("Authorization")||"";
+  const adminToken=authHeader.startsWith("Bearer ")?authHeader.slice(7):(form.get("admin_token")||"");
+  if(adminToken!==env.ADMIN_TOKEN)return json({error:"관리자 인증이 필요합니다."},401);
   const file=form.get("file");
   const id=crypto.randomUUID();
   let fileKey=null,fileUrl=null;
