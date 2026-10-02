@@ -11,23 +11,34 @@
 <header class="header"><a class="brand" href="index.html"><span class="logo">🌱</span><span>Myanmar ECE Archive<small>미얀마 유아교육 자료 아카이브</small></span></a><a class="back" href="resources.html">← 자료실</a></header>
 <main class="wrap"><div class="crumb">RESOURCE LIBRARY / DETAIL</div><article class="detail" id="detail"></article></main>
 <script>
-const API_BASE=window.ECE_API_BASE||"";
+const SHEET_ID=window.ECE_SHEET_ID||""; const SHEET_NAME=window.ECE_SHEET_NAME||"Resources";
 const id=new URLSearchParams(location.search).get("id");
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
 async function load(){
   const box=document.querySelector("#detail");
   if(!id){box.innerHTML='<section class="hero"><h1>자료를 찾을 수 없습니다.</h1></section>';return;}
+  if(!SHEET_ID){box.innerHTML='<section class="hero"><h1>자료실 설정이 아직 완료되지 않았습니다.</h1></section>';return;}
   try{
-    const res=await fetch(API_BASE+"/api/resources");
-    if(!res.ok)throw new Error();
-    const list=await res.json();
+    const url="https://docs.google.com/spreadsheets/d/"+encodeURIComponent(SHEET_ID)+"/gviz/tq?tqx=out:csv&sheet="+encodeURIComponent(SHEET_NAME);
+    const res=await fetch(url); if(!res.ok)throw new Error();
+    const rows=parseCSV(await res.text()); const headers=rows.shift().map(x=>x.trim());
+    const list=rows.filter(r=>r.some(Boolean)).map(r=>Object.fromEntries(headers.map((h,i)=>[h,r[i]??""])));
     const r=list.find(x=>String(x.id)===String(id));
     if(!r){box.innerHTML='<section class="hero"><h1>자료를 찾을 수 없습니다.</h1></section>';return;}
-    const download=r.file_url?'<a class="btn primary" href="'+esc(r.file_url)+'" target="_blank" rel="noopener">다운로드</a>':'<span class="btn disabled">파일 준비 중</span>';
+    const download=r.drive_url?'<a class="btn primary" href="'+esc(r.drive_url)+'" target="_blank" rel="noopener">Google Drive에서 열기</a>':'<span class="btn disabled">파일 준비 중</span>';
     box.innerHTML='<section class="hero"><span class="tag">'+esc(r.domain||"자료")+'</span><h1>'+esc(r.title)+'</h1><p class="desc">'+esc(r.description||"")+'</p></section><section class="content"><div class="meta"><div class="item"><span>대상</span><strong>'+esc(r.audience||"-")+'</strong></div><div class="item"><span>연령</span><strong>'+esc(r.age||"전체")+'</strong></div><div class="item"><span>언어</span><strong>'+esc(r.language||"-")+'</strong></div><div class="item"><span>자료 유형</span><strong>'+esc(r.resource_type||"-")+'</strong></div></div><div class="actions">'+download+'</div><h2 class="section-title">자료 정보</h2><p class="desc">저자/기관: '+esc(r.author||"-")+'</p><p class="desc">등록일: '+esc(r.created_at||"-")+'</p></section>';
-  }catch(e){
-    box.innerHTML='<section class="hero"><h1>자료를 불러오는 중입니다.</h1><p class="desc">Cloudflare 연결 후 실제 자료가 표시됩니다.</p></section>';
+  }catch(e){box.innerHTML='<section class="hero"><h1>자료를 불러오지 못했습니다.</h1><p class="desc">Google Sheet 공개 설정을 확인해 주세요.</p></section>';}
+}
+function parseCSV(text){
+  const rows=[];let row=[],cell="",quoted=false;
+  for(let i=0;i<text.length;i++){const c=text[i],n=text[i+1];
+    if(c==='"'){if(quoted&&n==='"'){cell+='"';i++;}else quoted=!quoted;}
+    else if(c===','&&!quoted){row.push(cell);cell="";}
+    else if((c==='\n'||c==='\r')&&!quoted){if(c==='\r'&&n==='\n')i++;row.push(cell);cell="";if(row.some(x=>x!==""))rows.push(row);row=[];}
+    else cell+=c;
   }
+  if(cell!==""||row.length){row.push(cell);if(row.some(x=>x!==""))rows.push(row);}
+  return rows;
 }
 document.addEventListener("DOMContentLoaded",load);
-</script><script>window.ECE_API_BASE="https://myanmar-ece-archive-api.myanmarece.workers.dev";</script></body></html>
+</script><script>window.ECE_API_BASE="https://myanmar-ece-archive-api.myanmarece.workers.dev";</script><script>window.ECE_SHEET_ID="";window.ECE_SHEET_NAME="Resources";</script></body></html>
