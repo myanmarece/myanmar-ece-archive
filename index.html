@@ -68,12 +68,12 @@ h1{font-size:clamp(34px,4vw,54px);line-height:1.15;margin:0 0 18px;letter-spacin
 <section class="section" id="categories">
   <div class="section-head"><div><div class="section-label">EXPLORE RESOURCES</div><h2>자료를 찾아보세요</h2><p>필요한 분야의 자료를 한눈에 확인할 수 있습니다.</p></div><a class="more" href="resources.html">전체 자료 보기 →</a></div>
   <div class="categories">
-    <a class="cat" href="resources.html?domain='교사 자료')"><div class="cat-icon">👩‍🏫</div><strong>교사 자료</strong><span>수업·교실운영·교사훈련</span></a>
-    <a class="cat" href="#library" onclick="filterCat('학생 자료')"><div class="cat-icon">📚</div><strong>유아교육과 학생</strong><span>전공·과제·학습자료</span></a>
-    <a class="cat" href="#library" onclick="filterCat('성경적 유아교육')"><div class="cat-icon">✦</div><strong>성경적 유아교육</strong><span>신앙·세계관·성품교육</span></a>
-    <a class="cat" href="#library" onclick="filterCat('수업·활동')"><div class="cat-icon">🎨</div><strong>수업·활동</strong><span>언어·수학·미술·놀이</span></a>
-    <a class="cat" href="#library" onclick="filterCat('연구자료')"><div class="cat-icon">🔎</div><strong>연구자료</strong><span>논문·연구·교육이론</span></a>
-    <a class="cat" href="#library" onclick="filterCat('자료실')"><div class="cat-icon">📁</div><strong>자료실</strong><span>PDF·PPT·그림·음원</span></a>
+    <a class="cat" href="resources.html?domain=%EA%B5%90%EC%82%AC%20%EC%9E%90%EB%A3%8C"><div class="cat-icon">👩‍🏫</div><strong>교사 자료</strong><span>수업·교실운영·교사훈련</span></a>
+    <a class="cat" href="resources.html?domain=%ED%95%99%EC%83%9D%20%EC%9E%90%EB%A3%8C"><div class="cat-icon">📚</div><strong>유아교육과 학생</strong><span>전공·과제·학습자료</span></a>
+    <a class="cat" href="resources.html?domain=%EC%84%B1%EA%B2%BD%EC%A0%81%20%EC%9C%A0%EC%95%84%EA%B5%90%EC%9C%A1"><div class="cat-icon">✦</div><strong>성경적 유아교육</strong><span>신앙·세계관·성품교육</span></a>
+    <a class="cat" href="resources.html?domain=%EC%88%98%EC%97%85%C2%B7%ED%99%9C%EB%8F%99"><div class="cat-icon">🎨</div><strong>수업·활동</strong><span>언어·수학·미술·놀이</span></a>
+    <a class="cat" href="resources.html?domain=%EC%97%B0%EA%B5%AC%EC%9E%90%EB%A3%8C"><div class="cat-icon">🔎</div><strong>연구자료</strong><span>논문·연구·교육이론</span></a>
+    <a class="cat" href="resources.html?domain=%EC%9E%90%EB%A3%8C%EC%8B%A4"><div class="cat-icon">📁</div><strong>자료실</strong><span>PDF·PPT·그림·음원</span></a>
   </div>
 </section>
 
@@ -122,7 +122,7 @@ function searchResources(q){
  const found=resources.filter(r=>(r.title+r.desc+r.cat+r.type).toLowerCase().includes(q));
  box.classList.add('show');box.innerHTML=found.length?found.map(r=>`<div class="result"><strong>${r.title}</strong><br><small>${r.cat} · ${r.type}</small></div>`).join(''):'<div class="result">검색 결과가 없습니다.</div>';
 }
-function quickSearch(q){document.querySelector("#q").value=q;searchResources(q);document.querySelector("#q").focus();}\nfunction filterCat(cat){ location.href="resources.html?domain="+encodeURIComponent(cat); }
+function quickSearch(q){document.querySelector("#q").value=q;searchResources(q);document.querySelector("#q").focus();}\n
 render();
 </script>
 </body>
