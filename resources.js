@@ -1,5 +1,6 @@
 const SHEET_ID = window.ECE_SHEET_ID || "";
 const SHEET_NAME = window.ECE_SHEET_NAME || "Resources";
+const DATA_API = window.ECE_DATA_API || "";
 let liveData = [];
 
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));}
@@ -14,21 +15,36 @@ function renderLive(){
   document.querySelector("#count").textContent=out.length+"개 자료";
   document.querySelector("#grid").innerHTML=out.length?out.map(card).join(""):'<div class="empty">조건에 맞는 자료가 없습니다.</div>';
 }
+function finishLoad(rows){
+  if(!Array.isArray(rows)||!rows.length){liveData=[];renderLive();return;}
+  liveData=rows.filter(r=>r&&Object.keys(r).length).map(r=>Object.fromEntries(Object.entries(r).map(([k,v])=>[String(k).trim(),String(v??"")])));
+  ["q","audience","age","domain","lang"].forEach(id=>document.querySelector("#"+id)?.addEventListener("input",renderLive));
+  ["audience","age","domain","lang"].forEach(id=>document.querySelector("#"+id)?.addEventListener("change",renderLive));
+  renderLive();
+}
+function loadViaJsonp(){
+  return new Promise((resolve,reject)=>{
+    const cb="eceResources_"+Date.now();
+    const script=document.createElement("script");
+    const timer=setTimeout(()=>{cleanup();reject(new Error("timeout"));},10000);
+    function cleanup(){clearTimeout(timer);delete window[cb];script.remove();}
+    window[cb]=data=>{cleanup();resolve(data);};
+    script.onerror=()=>{cleanup();reject(new Error("load failed"));};
+    script.src=DATA_API+(DATA_API.includes("?")?"&":"?")+"callback="+encodeURIComponent(cb);
+    document.head.appendChild(script);
+  });
+}
 async function loadResources(){
-  if(!SHEET_ID){document.querySelector("#grid").innerHTML='<div class="empty">자료실 설정이 아직 완료되지 않았습니다.</div>';return;}
   try{
+    if(DATA_API){finishLoad(await loadViaJsonp());return;}
+    if(!SHEET_ID)throw new Error("no source");
     const url="https://docs.google.com/spreadsheets/d/"+encodeURIComponent(SHEET_ID)+"/gviz/tq?tqx=out:csv&sheet="+encodeURIComponent(SHEET_NAME);
-    const res=await fetch(url);
-    if(!res.ok)throw new Error();
-    const csv=await res.text();
-    const rows=parseCSV(csv);
-    if(rows.length<2){liveData=[];renderLive();return;}
+    const res=await fetch(url); if(!res.ok)throw new Error();
+    const rows=parseCSV(await res.text());
+    if(rows.length<2){finishLoad([]);return;}
     const headers=rows.shift().map(x=>x.trim());
-    liveData=rows.filter(r=>r.some(Boolean)).map(r=>Object.fromEntries(headers.map((h,i)=>[h,r[i]??""])));
-    ["q","audience","age","domain","lang"].forEach(id=>document.querySelector("#"+id)?.addEventListener("input",renderLive));
-    ["audience","age","domain","lang"].forEach(id=>document.querySelector("#"+id)?.addEventListener("change",renderLive));
-    renderLive();
-  }catch(e){document.querySelector("#grid").innerHTML='<div class="empty">자료를 불러오지 못했습니다. Google Sheet 공개 설정을 확인해 주세요.</div>';}
+    finishLoad(rows.filter(r=>r.some(Boolean)).map(r=>Object.fromEntries(headers.map((h,i)=>[h,r[i]??""]))));
+  }catch(e){document.querySelector("#grid").innerHTML='<div class="empty">자료를 불러오지 못했습니다. Google Sheet 연결 설정을 확인해 주세요.</div>';}
 }
 function parseCSV(text){
   const rows=[];let row=[],cell="",quoted=false;
