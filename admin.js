@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded",()=>{
+document.addEventListener("DOMContentLoaded",async()=>{\n const cfg=window.SUPABASE_CONFIG;\n if(!cfg?.url||!cfg?.anonKey){document.querySelector("#loginStatus").textContent="Supabase 설정이 필요합니다.";return;}\n\n const show=()=>{document.querySelector("#loginPanel").style.display="none";document.querySelector("#adminContent").style.display="block";};\n const {data:{session}}=await client.auth.getSession(); if(session) show();\n document.querySelector("#loginForm").addEventListener("submit",async e=>{e.preventDefault();const s=document.querySelector("#loginStatus");s.textContent="로그인 중...";const {error}=await client.auth.signInWithPassword({email:document.querySelector("#loginEmail").value,password:document.querySelector("#loginPassword").value});if(error){s.textContent="로그인 실패: "+error.message;return;}show();});
  const form=document.querySelector("#form"),status=document.querySelector("#status");
  if(!form)return;
  form.addEventListener("submit",async e=>{
