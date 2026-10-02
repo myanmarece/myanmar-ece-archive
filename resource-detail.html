@@ -11,17 +11,23 @@
 <header class="header"><a class="brand" href="index.html"><span class="logo">🌱</span><span>Myanmar ECE Archive<small>미얀마 유아교육 자료 아카이브</small></span></a><a class="back" href="resources.html">← 자료실</a></header>
 <main class="wrap"><div class="crumb">RESOURCE LIBRARY / DETAIL</div><article class="detail" id="detail"></article></main>
 <script>
-const data={
-"1":{title:"유아를 위한 성경 이야기 수업안",desc:"성경 이야기를 유아의 눈높이에 맞게 구성한 수업 자료입니다.",domain:"성경적 유아교육",audience:"교사",age:"5세",lang:"미얀마어",type:"수업계획안"},
-"2":{title:"놀이 중심 유아교육 활동 모음",desc:"3–6세 유아를 위한 다양한 놀이 활동과 교사 가이드입니다.",domain:"수업·활동",audience:"교사",age:"3세",lang:"미얀마어",type:"PDF"},
-"3":{title:"유아 관찰 및 평가 기초",desc:"유아의 놀이와 발달을 관찰하고 기록하는 방법을 소개합니다.",domain:"유아교육과 학생",audience:"학생",age:"4세",lang:"영어",type:"학습자료"},
-"4":{title:"교실 환경 구성 가이드",desc:"유아의 자율성과 놀이를 지원하는 교실 환경 구성 자료입니다.",domain:"교사 자료",audience:"교사",age:"5세",lang:"한국어",type:"교사 가이드"},
-"5":{title:"아동발달 핵심 개념",desc:"유아교육과 학생을 위한 발달이론 요약 자료입니다.",domain:"연구자료",audience:"학생",age:"6세",lang:"영어",type:"PPT"},
-"6":{title:"성품교육 활동 카드",desc:"유아와 함께 나눌 수 있는 성품 주제별 활동 카드입니다.",domain:"자료실",audience:"공통",age:"4세",lang:"미얀마어",type:"플래시카드"},
-"7":{title:"언어 발달 놀이 자료",desc:"말하기와 어휘 발달을 돕는 놀이 활동 자료입니다.",domain:"수업·활동",audience:"교사",age:"3세",lang:"미얀마어",type:"워크시트"},
-"8":{title:"기독교 교사의 자기이해",desc:"교사의 소명과 관계를 돌아보는 교사교육 자료입니다.",domain:"성경적 유아교육",audience:"교사",age:"6세",lang:"한국어",type:"워크시트"},
-"9":{title:"유아교육과정 개론 요약",desc:"유아교육과정의 핵심 개념을 정리한 학생용 자료입니다.",domain:"유아교육과 학생",audience:"학생",age:"5세",lang:"영어",type:"PDF"}
-};
-const id=new URLSearchParams(location.search).get("id")||"1",r=data[id]||data["1"];
-document.querySelector("#detail").innerHTML=`<section class="hero"><span class="tag">${r.domain}</span><h1>${r.title}</h1><p class="desc">${r.desc}</p></section><section class="content"><div class="meta"><div class="item"><span>대상</span><strong>${r.audience}</strong></div><div class="item"><span>연령</span><strong>${r.age}</strong></div><div class="item"><span>언어</span><strong>${r.lang}</strong></div><div class="item"><span>자료 유형</span><strong>${r.type}</strong></div></div><div class="actions"><span class="btn disabled">미리보기 · 준비 중</span><span class="btn disabled">다운로드 · 준비 중</span></div><h2 class="section-title">관련 자료</h2><div class="related"><a class="rel" href="resource-detail.html?id=2"><b>놀이 중심 유아교육 활동 모음</b><p>수업·활동 · PDF</p></a><a class="rel" href="resource-detail.html?id=6"><b>성품교육 활동 카드</b><p>자료실 · 플래시카드</p></a><a class="rel" href="resource-detail.html?id=8"><b>기독교 교사의 자기이해</b><p>성경적 유아교육 · 워크시트</p></a></div></section>`;
-</script></body></html>
+const API_BASE=window.ECE_API_BASE||"";
+const id=new URLSearchParams(location.search).get("id");
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+async function load(){
+  const box=document.querySelector("#detail");
+  if(!id){box.innerHTML='<section class="hero"><h1>자료를 찾을 수 없습니다.</h1></section>';return;}
+  try{
+    const res=await fetch(API_BASE+"/api/resources");
+    if(!res.ok)throw new Error();
+    const list=await res.json();
+    const r=list.find(x=>String(x.id)===String(id));
+    if(!r){box.innerHTML='<section class="hero"><h1>자료를 찾을 수 없습니다.</h1></section>';return;}
+    const download=r.file_url?'<a class="btn primary" href="'+esc(r.file_url)+'" target="_blank" rel="noopener">다운로드</a>':'<span class="btn disabled">파일 준비 중</span>';
+    box.innerHTML='<section class="hero"><span class="tag">'+esc(r.domain||"자료")+'</span><h1>'+esc(r.title)+'</h1><p class="desc">'+esc(r.description||"")+'</p></section><section class="content"><div class="meta"><div class="item"><span>대상</span><strong>'+esc(r.audience||"-")+'</strong></div><div class="item"><span>연령</span><strong>'+esc(r.age||"전체")+'</strong></div><div class="item"><span>언어</span><strong>'+esc(r.language||"-")+'</strong></div><div class="item"><span>자료 유형</span><strong>'+esc(r.resource_type||"-")+'</strong></div></div><div class="actions">'+download+'</div><h2 class="section-title">자료 정보</h2><p class="desc">저자/기관: '+esc(r.author||"-")+'</p><p class="desc">등록일: '+esc(r.created_at||"-")+'</p></section>';
+  }catch(e){
+    box.innerHTML='<section class="hero"><h1>자료를 불러오는 중입니다.</h1><p class="desc">Cloudflare 연결 후 실제 자료가 표시됩니다.</p></section>';
+  }
+}
+document.addEventListener("DOMContentLoaded",load);
+</script><script>window.ECE_API_BASE="";</script></body></html>
