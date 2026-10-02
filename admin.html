@@ -2,33 +2,25 @@
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>관리자 | Myanmar ECE Archive</title>
 <style>
-body{margin:0;background:#fffaf5;color:#263238;font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif}.header{height:74px;background:#fff;border-bottom:1px solid #e8e2dc;display:flex;align-items:center;justify-content:space-between;padding:0 5vw}.brand{font-weight:800}.brand small{display:block;color:#929a9d;font-size:10px}.back{color:#bd6079;font-size:13px;font-weight:800}.wrap{max-width:900px;margin:auto;padding:45px 24px}.notice{background:#fff7df;border:1px solid #efdfac;border-radius:15px;padding:16px;font-size:13px;margin-bottom:20px}.panel{background:#fff;border:1px solid #e8e2dc;border-radius:22px;padding:26px}label{display:block;font-size:12px;font-weight:800;margin-bottom:6px}input,textarea,select{width:100%;box-sizing:border-box;padding:11px 12px;border:1px solid #e8e2dc;border-radius:11px;font:inherit;background:#fff}textarea{min-height:100px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.full{grid-column:1/-1}.actions{margin-top:20px}.btn{border:0;border-radius:11px;padding:12px 20px;background:#f58ba5;color:#fff;font-weight:800;cursor:pointer}.secondary{background:#eee7e2;color:#5f686c}.status{margin-top:14px;font-size:12px;color:#68777d}.hidden{display:none}.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}@media(max-width:700px){.grid{grid-template-columns:1fr}.full{grid-column:auto}}
-</style></head>
-<body>
+body{margin:0;background:#fffaf5;color:#263238;font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif}.header{height:74px;background:#fff;border-bottom:1px solid #e8e2dc;display:flex;align-items:center;justify-content:space-between;padding:0 5vw}.brand{font-weight:800}.brand small{display:block;color:#929a9d;font-size:10px}.back{color:#bd6079;font-size:13px;font-weight:800}.wrap{max-width:900px;margin:auto;padding:45px 24px}.notice{background:#fff7df;border:1px solid #efdfac;border-radius:15px;padding:16px;font-size:13px;line-height:1.7;margin-bottom:20px}.panel{background:#fff;border:1px solid #e8e2dc;border-radius:22px;padding:26px;margin-bottom:20px}.steps{display:grid;gap:12px}.step{padding:15px;border-radius:14px;background:#faf6f2}.step b{display:block;margin-bottom:5px}.btn{display:inline-block;border:0;border-radius:11px;padding:12px 20px;background:#f58ba5;color:#fff;font-weight:800;text-decoration:none}.secondary{background:#eee7e2;color:#5f686c}
+</style></head><body>
 <header class="header"><div class="brand">Myanmar ECE Archive<small>관리자 자료 등록</small></div><a class="back" href="resources.html">← 자료실</a></header>
 <main class="wrap">
-<section id="loginPanel" class="panel">
-<h1>관리자 로그인</h1>
-<div class="notice">관리자 계정으로 로그인하면 자료를 등록할 수 있습니다.</div>
-<form id="loginForm">
-<div style="margin-bottom:14px"><label>관리자 이메일</label><input name="email" type="email" autocomplete="username" required></div>
-<div><label>비밀번호</label><input name="password" type="password" autocomplete="current-password" required></div>
-<div class="actions"><button class="btn" type="submit">로그인</button></div>
-</form><div id="loginStatus" class="status"></div>
+<section class="panel">
+<h1>자료 등록</h1>
+<div class="notice">자료 파일은 Google Drive에 저장하고, 자료 정보는 Google Sheet에 한 줄씩 등록합니다. 등록 후 자료실에 자동으로 표시됩니다.</div>
+<div class="steps">
+<div class="step"><b>1. Google Drive에 파일 업로드</b>파일을 업로드한 뒤 공유 설정을 <b>“링크가 있는 모든 사용자 · 뷰어”</b>로 설정하세요.</div>
+<div class="step"><b>2. Google Sheet에 자료 정보 입력</b>Resources 시트에 한 줄씩 입력하고 <b>drive_url</b> 칸에 Google Drive 공유 링크를 넣으세요.</div>
+<div class="step"><b>3. 자료실에서 확인</b>자료실을 새로고침하면 등록한 자료가 자동으로 나타납니다.</div>
+</div>
+<p style="margin-top:22px;display:flex;gap:10px;flex-wrap:wrap">
+<a class="btn" href="https://drive.google.com/" target="_blank" rel="noopener">Google Drive 열기</a>
+<a class="btn secondary" href="https://docs.google.com/spreadsheets/d/12wiXS18mGf1h_xNTpyY_6P6beMd5uTWFTI7JfhO79HQ/edit" target="_blank" rel="noopener">자료 관리 Sheet 열기</a>
+</p>
 </section>
-<section id="uploadPanel" class="panel hidden">
-<div class="topline"><h1 style="margin:0">새 자료 등록</h1><button id="logout" class="btn secondary" type="button">로그아웃</button></div>
-<form id="form" class="grid">
-<div><label>자료 제목 *</label><input name="title" required></div><div><label>미얀마어 제목</label><input name="title_myanmar"></div>
-<div class="full"><label>설명</label><textarea name="description"></textarea></div>
-<div><label>대상</label><select name="audience"><option>교사</option><option>학생</option><option>공통</option></select></div>
-<div><label>연령</label><select name="age"><option value="">전체</option><option>3세</option><option>4세</option><option>5세</option><option>6세</option></select></div>
-<div><label>분야</label><select name="domain"><option>교사 자료</option><option>유아교육과 학생</option><option>성경적 유아교육</option><option>수업·활동</option><option>연구자료</option><option>자료실</option></select></div>
-<div><label>언어</label><select name="language"><option>미얀마어</option><option>영어</option><option>한국어</option></select></div>
-<div><label>자료 유형</label><input name="resource_type" placeholder="PDF, PPT, 워크시트 등"></div><div><label>저자/기관</label><input name="author"></div>
-<div class="full"><label>파일</label><input type="file" name="file" accept=".pdf,.ppt,.pptx,.doc,.docx,.jpg,.jpeg,.png,.mp3,.mp4"></div>
-<div class="full actions"><button class="btn" type="submit">자료 등록</button></div>
-</form><div id="status" class="status"></div>
+<section class="panel">
+<h2>Resources 시트 필수 항목</h2>
+<div class="notice" style="margin:0">id · title · title_myanmar · description · audience · age · domain · resource_type · language · author · created_at · drive_url</div>
 </section>
-</main>
-<script>window.ECE_API_BASE="https://myanmar-ece-archive-api.myanmarece.workers.dev";</script><script src="admin.js"></script></body></html>
+</main></body></html>
