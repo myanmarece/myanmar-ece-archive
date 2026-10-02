@@ -11,23 +11,38 @@
 <header class="header"><a class="brand" href="index.html"><span class="logo">🌱</span><span>Myanmar ECE Archive<small>미얀마 유아교육 자료 아카이브</small></span></a><a class="back" href="resources.html">← 자료실</a></header>
 <main class="wrap"><div class="crumb">RESOURCE LIBRARY / DETAIL</div><article class="detail" id="detail"></article></main>
 <script>
-const SHEET_ID=window.ECE_SHEET_ID||""; const SHEET_NAME=window.ECE_SHEET_NAME||"Resources";
+const SHEET_ID=window.ECE_SHEET_ID||""; const SHEET_NAME=window.ECE_SHEET_NAME||"Resources"; const DATA_API=window.ECE_DATA_API||"";
 const id=new URLSearchParams(location.search).get("id");
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+async function getRows(){
+  if(DATA_API){
+    return await new Promise((resolve,reject)=>{
+      const cb="eceDetail_"+Date.now(), script=document.createElement("script");
+      const timer=setTimeout(()=>{cleanup();reject(new Error("timeout"));},10000);
+      function cleanup(){clearTimeout(timer);delete window[cb];script.remove();}
+      window[cb]=data=>{cleanup();resolve(data);};
+      script.onerror=()=>{cleanup();reject(new Error("load failed"));};
+      script.src=DATA_API+(DATA_API.includes("?")?"&":"?")+"callback="+encodeURIComponent(cb);
+      document.head.appendChild(script);
+    });
+  }
+  if(!SHEET_ID) throw new Error("no source");
+  const url="https://docs.google.com/spreadsheets/d/"+encodeURIComponent(SHEET_ID)+"/gviz/tq?tqx=out:csv&sheet="+encodeURIComponent(SHEET_NAME);
+  const res=await fetch(url); if(!res.ok)throw new Error();
+  const rows=parseCSV(await res.text()); if(!rows.length)return [];
+  const headers=rows.shift().map(x=>x.trim());
+  return rows.filter(r=>r.some(Boolean)).map(r=>Object.fromEntries(headers.map((h,i)=>[h,r[i]??""])));
+}
 async function load(){
   const box=document.querySelector("#detail");
   if(!id){box.innerHTML='<section class="hero"><h1>자료를 찾을 수 없습니다.</h1></section>';return;}
-  if(!SHEET_ID){box.innerHTML='<section class="hero"><h1>자료실 설정이 아직 완료되지 않았습니다.</h1></section>';return;}
   try{
-    const url="https://docs.google.com/spreadsheets/d/"+encodeURIComponent(SHEET_ID)+"/gviz/tq?tqx=out:csv&sheet="+encodeURIComponent(SHEET_NAME);
-    const res=await fetch(url); if(!res.ok)throw new Error();
-    const rows=parseCSV(await res.text()); const headers=rows.shift().map(x=>x.trim());
-    const list=rows.filter(r=>r.some(Boolean)).map(r=>Object.fromEntries(headers.map((h,i)=>[h,r[i]??""])));
+    const list=await getRows();
     const r=list.find(x=>String(x.id)===String(id));
     if(!r){box.innerHTML='<section class="hero"><h1>자료를 찾을 수 없습니다.</h1></section>';return;}
     const download=r.drive_url?'<a class="btn primary" href="'+esc(r.drive_url)+'" target="_blank" rel="noopener">Google Drive에서 열기</a>':'<span class="btn disabled">파일 준비 중</span>';
     box.innerHTML='<section class="hero"><span class="tag">'+esc(r.domain||"자료")+'</span><h1>'+esc(r.title)+'</h1><p class="desc">'+esc(r.description||"")+'</p></section><section class="content"><div class="meta"><div class="item"><span>대상</span><strong>'+esc(r.audience||"-")+'</strong></div><div class="item"><span>연령</span><strong>'+esc(r.age||"전체")+'</strong></div><div class="item"><span>언어</span><strong>'+esc(r.language||"-")+'</strong></div><div class="item"><span>자료 유형</span><strong>'+esc(r.resource_type||"-")+'</strong></div></div><div class="actions">'+download+'</div><h2 class="section-title">자료 정보</h2><p class="desc">저자/기관: '+esc(r.author||"-")+'</p><p class="desc">등록일: '+esc(r.created_at||"-")+'</p></section>';
-  }catch(e){box.innerHTML='<section class="hero"><h1>자료를 불러오지 못했습니다.</h1><p class="desc">Google Sheet 공개 설정을 확인해 주세요.</p></section>';}
+  }catch(e){box.innerHTML='<section class="hero"><h1>자료를 불러오지 못했습니다.</h1><p class="desc">Google Sheet 연결 설정을 확인해 주세요.</p></section>';}
 }
 function parseCSV(text){
   const rows=[];let row=[],cell="",quoted=false;
