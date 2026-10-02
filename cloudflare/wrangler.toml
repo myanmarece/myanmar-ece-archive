@@ -2,3 +2,12 @@ name = "myanmar-ece-archive-api"
 main = "worker.js"
 compatibility_date = "2026-10-02"
 keep_vars = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "myanmar-ece-archive"
+database_id = "8a542d2e-7000-442e-9f0b-1483b5c80027"
+
+[[r2_buckets]]
+binding = "RESOURCES"
+bucket_name = "myanmar-ece-resources"
