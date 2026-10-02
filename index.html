@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Myanmar ECE Archive</title>
+<meta name="description" content="미얀마 유아교육을 위한 지식과 자료의 공간">
+<style>
+:root{
+  --ink:#263238;--muted:#68777d;--pink:#f58ba5;--pink2:#fff0f4;--yellow:#f6cf6d;
+  --mint:#a8d9c8;--blue:#a9d4ee;--cream:#fffaf5;--line:#e8e2dc;--white:#fff;
+  --shadow:0 12px 32px rgba(50,45,40,.08);--radius:22px;
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;background:var(--cream);line-height:1.6}
+a{text-decoration:none;color:inherit}button,input,select{font:inherit}
+.header{height:76px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 5vw;border-bottom:1px solid #f0ece8;position:sticky;top:0;z-index:20}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800}.logo{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--pink),#ffc6d3);display:grid;place-items:center;color:white;font-size:22px}.brand small{display:block;font-size:11px;color:#929a9d;font-weight:600;letter-spacing:.02em}
+.nav{display:flex;gap:24px;align-items:center;font-size:14px;font-weight:650;color:#59656a}.nav a:hover{color:#d95d7d}.search-mini{border:1px solid var(--line);border-radius:999px;padding:9px 14px;background:white;cursor:pointer}
+.hero{max-width:1180px;margin:42px auto 0;padding:0 24px}.hero-card{min-height:430px;border-radius:32px;overflow:hidden;position:relative;background:linear-gradient(115deg,#f8dfe5 0%,#fff5e9 48%,#d9eee8 100%);display:flex;align-items:center;box-shadow:var(--shadow)}
+.hero-copy{width:56%;padding:60px 7%}.eyebrow{display:inline-block;padding:7px 13px;border-radius:999px;background:rgba(255,255,255,.7);font-size:12px;font-weight:800;color:#c75f79;margin-bottom:15px}
+h1{font-size:clamp(34px,4vw,54px);line-height:1.15;margin:0 0 18px;letter-spacing:-.04em} .hero-copy p{font-size:17px;color:#58676b;margin:0 0 28px;max-width:540px}
+.searchbox{background:white;border-radius:18px;padding:7px;display:flex;box-shadow:0 8px 25px rgba(80,60,50,.1);max-width:580px}.searchbox input{border:0;outline:0;flex:1;padding:13px 16px;background:transparent}.searchbox button{border:0;background:var(--pink);color:#fff;padding:12px 21px;border-radius:13px;font-weight:800;cursor:pointer}
+.hero-art{position:absolute;right:3%;bottom:0;width:40%;height:90%;display:flex;align-items:flex-end;justify-content:center}.blob{width:85%;height:78%;border-radius:50% 50% 18% 18%;background:rgba(255,255,255,.45);position:relative}.person{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);width:190px;height:260px}.head{width:95px;height:95px;border-radius:50%;background:#b97755;margin:auto;border:7px solid #fff1e8}.hair{width:105px;height:55px;border-radius:60px 60px 20px 20px;background:#4b342b;position:absolute;top:-2px;left:43px}.body{width:170px;height:170px;border-radius:85px 85px 30px 30px;background:#f7b7c6;margin:-4px auto}.book{position:absolute;bottom:34px;left:18px;width:110px;height:72px;background:white;border-radius:8px;transform:rotate(-7deg);box-shadow:0 5px 12px #bfa8a0}.child{position:absolute;bottom:8px;right:-8px;width:100px;height:180px}.child .head{width:65px;height:65px;border-width:5px}.child .hair{width:72px;height:38px;left:14px;top:0}.child .body{width:92px;height:105px;margin-top:0;background:#9dcdea}
+.section{max-width:1180px;margin:58px auto;padding:0 24px}.section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:20px}.section h2{margin:0;font-size:25px;letter-spacing:-.03em}.section-head p{margin:4px 0 0;color:var(--muted);font-size:14px}.more{font-size:13px;color:#bd6079;font-weight:800}
+.categories{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}.cat{padding:23px 16px;border-radius:20px;min-height:140px;box-shadow:var(--shadow);transition:.2s;cursor:pointer}.cat:hover{transform:translateY(-3px)}.cat:nth-child(1){background:#fff0f4}.cat:nth-child(2){background:#fff5d9}.cat:nth-child(3){background:#e9f6f0}.cat:nth-child(4){background:#eaf5fb}.cat:nth-child(5){background:#f1ecfa}.cat:nth-child(6){background:#f8eee8}.cat-icon{font-size:26px;margin-bottom:10px}.cat strong{display:block;font-size:15px}.cat span{font-size:11px;color:#6f797c}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 7px 22px rgba(50,45,40,.05)}.thumb{height:135px;display:flex;align-items:center;justify-content:center;font-size:42px}.thumb.pink{background:#fff0f4}.thumb.mint{background:#e9f6f0}.thumb.blue{background:#eaf5fb}.card-body{padding:18px}.tag{display:inline-block;background:#f7f3ef;border-radius:999px;padding:4px 9px;font-size:10px;font-weight:800;color:#697174;margin-bottom:9px}.card h3{font-size:16px;line-height:1.45;margin:0 0 7px}.card p{font-size:12px;color:var(--muted);margin:0 0 13px}.meta{font-size:11px;color:#8a9395;display:flex;justify-content:space-between}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.stat{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px}.stat b{display:block;font-size:28px}.stat span{font-size:12px;color:var(--muted)}
+.footer{margin-top:80px;background:#29373b;color:#dbe3e4;padding:46px 5vw}.footer-inner{max-width:1180px;margin:auto;display:flex;justify-content:space-between;gap:30px}.footer h3{margin:0 0 8px;color:#fff}.footer p,.footer a{font-size:12px;color:#b9c5c7}.footer-links{display:flex;gap:26px}
+.results{display:none;margin-top:18px;background:white;border:1px solid var(--line);border-radius:16px;padding:14px}.results.show{display:block}.result{padding:10px;border-bottom:1px solid #eee;cursor:pointer}.result:last-child{border:0}
+@media(max-width:900px){.nav a{display:none}.hero-copy{width:70%;padding:42px}.hero-art{opacity:.45;width:48%}.categories{grid-template-columns:repeat(3,1fr)}.cards{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.header{padding:0 18px}.brand small{display:none}.hero{margin-top:18px;padding:0 14px}.hero-card{min-height:520px}.hero-copy{width:100%;padding:35px 25px;z-index:2}.hero-art{width:100%;right:-30%;opacity:.3}.categories,.cards,.stats{grid-template-columns:1fr 1fr}.section{padding:0 14px}.footer-inner{display:block}.footer-links{margin-top:20px;flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<header class="header">
+  <a class="brand" href="#"><span class="logo">🌱</span><span>Myanmar ECE Archive<small>미얀마 유아교육 자료 아카이브</small></span></a>
+  <nav class="nav">
+    <a href="#categories">교사 자료</a><a href="#students">학생 자료</a><a href="#biblical">성경적 유아교육</a><a href="#library">자료실</a><a href="#about">소개</a>
+    <button class="search-mini" onclick="document.querySelector('#q').focus()">검색</button>
+  </nav>
+</header>
+
+<main>
+<section class="hero">
+  <div class="hero-card">
+    <div class="hero-copy">
+      <span class="eyebrow">MYANMAR EARLY CHILDHOOD EDUCATION</span>
+      <h1>미얀마 유아교육을 위한<br><span style="color:#d8617e">지식과 자료의 공간</span></h1>
+      <p>교사와 유아교육을 공부하는 학생들이 함께 배우고 나눌 수 있는 교육 자료 아카이브입니다.</p>
+      <div class="searchbox">
+        <input id="q" type="search" placeholder="자료를 검색해 보세요. 예: 놀이, 성경이야기, 관찰..." oninput="searchResources(this.value)">
+        <button onclick="searchResources(document.querySelector('#q').value)">검색</button>
+      </div>
+      <div id="results" class="results"></div>
+    </div>
+    <div class="hero-art"><div class="blob"><div class="person"><div class="hair"></div><div class="head"></div><div class="body"></div><div class="book"></div><div class="child"><div class="hair"></div><div class="head"></div><div class="body"></div></div></div></div></div>
+  </div>
+</section>
+
+<section class="section" id="categories">
+  <div class="section-head"><div><h2>자료를 찾아보세요</h2><p>필요한 분야의 자료를 한눈에 확인할 수 있습니다.</p></div><a class="more" href="#library">전체 자료 보기 →</a></div>
+  <div class="categories">
+    <a class="cat" href="#library" onclick="filterCat('교사 자료')"><div class="cat-icon">👩‍🏫</div><strong>교사 자료</strong><span>수업·교실운영·교사훈련</span></a>
+    <a class="cat" href="#library" onclick="filterCat('학생 자료')"><div class="cat-icon">📚</div><strong>유아교육과 학생</strong><span>전공·과제·학습자료</span></a>
+    <a class="cat" href="#library" onclick="filterCat('성경적 유아교육')"><div class="cat-icon">✦</div><strong>성경적 유아교육</strong><span>신앙·세계관·성품교육</span></a>
+    <a class="cat" href="#library" onclick="filterCat('수업·활동')"><div class="cat-icon">🎨</div><strong>수업·활동</strong><span>언어·수학·미술·놀이</span></a>
+    <a class="cat" href="#library" onclick="filterCat('연구자료')"><div class="cat-icon">🔎</div><strong>연구자료</strong><span>논문·연구·교육이론</span></a>
+    <a class="cat" href="#library" onclick="filterCat('자료실')"><div class="cat-icon">📁</div><strong>자료실</strong><span>PDF·PPT·그림·음원</span></a>
+  </div>
+</section>
+
+<section class="section" id="library">
+  <div class="section-head"><div><h2>추천 자료</h2><p>현장에서 바로 활용할 수 있는 자료를 모았습니다.</p></div><a class="more" href="#">더 보기 →</a></div>
+  <div class="cards" id="cards"></div>
+</section>
+
+<section class="section" id="students">
+  <div class="section-head"><div><h2>아카이브 현황</h2><p>자료가 쌓일수록 더 많은 교사와 학생이 함께 배울 수 있습니다.</p></div></div>
+  <div class="stats"><div class="stat"><b>120+</b><span>교육 자료</span></div><div class="stat"><b>6</b><span>주요 자료 분야</span></div><div class="stat"><b>3</b><span>지원 언어</span></div><div class="stat"><b>24/7</b><span>자료 열람</span></div></div>
+</section>
+
+<section class="section" id="biblical">
+  <div class="section-head"><div><h2>성경적 유아교육</h2><p>아이를 하나님의 형상으로 바라보며 교육의 의미를 함께 생각합니다.</p></div></div>
+  <div class="cards">
+    <article class="card"><div class="thumb pink">♡</div><div class="card-body"><span class="tag">철학</span><h3>성경적 유아교육 철학</h3><p>유아교육의 목적과 교사의 역할을 성경적 관점에서 살펴봅니다.</p><div class="meta"><span>PDF</span><span>미리보기</span></div></div></article>
+    <article class="card"><div class="thumb mint">✦</div><div class="card-body"><span class="tag">신앙교육</span><h3>유아를 위한 성경 이야기</h3><p>유아의 발달 수준에 맞게 성경 이야기를 전달하는 방법을 소개합니다.</p><div class="meta"><span>수업자료</span><span>미리보기</span></div></div></article>
+    <article class="card"><div class="thumb blue">☀</div><div class="card-body"><span class="tag">교사교육</span><h3>기독교 교사의 자기이해</h3><p>교사의 소명과 관계, 그리고 교육 현장에서의 실천을 다룹니다.</p><div class="meta"><span>워크시트</span><span>미리보기</span></div></div></article>
+  </div>
+</section>
+</main>
+
+<footer class="footer" id="about">
+  <div class="footer-inner">
+    <div><h3>Myanmar ECE Archive</h3><p>미얀마 유아교육을 위한 지식과 자료의 공간</p></div>
+    <div class="footer-links"><a href="#">자료 요청</a><a href="#">이용 안내</a><a href="#">문의</a><a href="#">개인정보처리방침</a></div>
+  </div>
+</footer>
+
+<script>
+const resources=[
+ {title:"유아를 위한 성경 이야기 수업안",desc:"성경 이야기를 유아의 눈높이에 맞게 구성한 수업 자료",cat:"성경적 유아교육",type:"수업계획안",icon:"📖",tone:"pink"},
+ {title:"놀이 중심 유아교육 활동 모음",desc:"3–6세 유아를 위한 다양한 놀이 활동과 교사 가이드",cat:"수업·활동",type:"PDF",icon:"🎨",tone:"mint"},
+ {title:"유아 관찰 및 평가 기초",desc:"유아의 놀이와 발달을 관찰하고 기록하는 방법",cat:"학생 자료",type:"학습자료",icon:"🔎",tone:"blue"},
+ {title:"교실 환경 구성 가이드",desc:"유아의 자율성과 놀이를 지원하는 교실 환경 구성",cat:"교사 자료",type:"교사 가이드",icon:"🏫",tone:"pink"},
+ {title:"아동발달 핵심 개념",desc:"유아교육과 학생을 위한 발달이론 요약 자료",cat:"연구자료",type:"PPT",icon:"📚",tone:"mint"},
+ {title:"성품교육 활동 카드",desc:"유아와 함께 나눌 수 있는 성품 주제별 활동",cat:"자료실",type:"플래시카드",icon:"⭐",tone:"blue"}
+];
+function render(items=resources){
+ document.querySelector('#cards').innerHTML=items.slice(0,6).map(r=>`<article class="card"><div class="thumb ${r.tone}">${r.icon}</div><div class="card-body"><span class="tag">${r.cat}</span><h3>${r.title}</h3><p>${r.desc}</p><div class="meta"><span>${r.type}</span><span>미리보기 →</span></div></div></article>`).join('');
+}
+function searchResources(q){
+ const box=document.querySelector('#results');q=q.trim().toLowerCase();
+ if(!q){box.classList.remove('show');return}
+ const found=resources.filter(r=>(r.title+r.desc+r.cat+r.type).toLowerCase().includes(q));
+ box.classList.add('show');box.innerHTML=found.length?found.map(r=>`<div class="result"><strong>${r.title}</strong><br><small>${r.cat} · ${r.type}</small></div>`).join(''):'<div class="result">검색 결과가 없습니다.</div>';
+}
+function filterCat(cat){
+ render(resources.filter(r=>r.cat===cat));
+ document.querySelector('#library').scrollIntoView({behavior:'smooth'});
+}
+render();
+</script>
+</body>
+</html>
