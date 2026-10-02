@@ -11,7 +11,7 @@
 .tools{background:#fff;border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:0 8px 25px rgba(50,45,40,.05);margin-bottom:28px}.search{display:flex;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:14px}.search input{flex:1;border:0;outline:0;padding:14px 16px}.search button{border:0;background:var(--pink);color:white;padding:0 22px;font-weight:800}
 .filters{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.filters select{width:100%;border:1px solid var(--line);background:#fff;padding:11px 12px;border-radius:12px;color:#4f5b5f}
 .head{display:flex;justify-content:space-between;align-items:end;margin:25px 0 15px}.count{font-size:12px;color:var(--muted)}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;transition:.2s}.card:hover{transform:translateY(-3px);box-shadow:0 12px 25px rgba(50,45,40,.08)}.thumb{height:130px;display:grid;place-items:center;font-size:40px}.pink{background:#fff0f4}.mint{background:var(--mint)}.blue{background:var(--blue)}.yellow{background:var(--yellow)}.lav{background:var(--lav)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card{display:block;color:inherit;background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;transition:.2s}.card:hover{transform:translateY(-3px);box-shadow:0 12px 25px rgba(50,45,40,.08)}.thumb{height:130px;display:grid;place-items:center;font-size:40px}.pink{background:#fff0f4}.mint{background:var(--mint)}.blue{background:var(--blue)}.yellow{background:var(--yellow)}.lav{background:var(--lav)}
 .body{padding:18px}.tag{display:inline-block;background:#f7f3ef;border-radius:99px;padding:4px 8px;font-size:10px;font-weight:800;margin-bottom:9px}.card h2{font-size:16px;line-height:1.45;margin:0 0 7px}.card p{font-size:12px;color:var(--muted);min-height:38px;margin:0 0 14px}.meta{display:flex;justify-content:space-between;color:#8a9395;font-size:11px}.empty{grid-column:1/-1;text-align:center;padding:50px;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:18px}
 @media(max-width:800px){.grid{grid-template-columns:1fr 1fr}.filters{grid-template-columns:1fr 1fr}}@media(max-width:560px){.wrap{padding:30px 15px}.intro h1{font-size:34px}.grid,.filters{grid-template-columns:1fr}.search button{padding:0 15px}.header{padding:0 15px}}
 </style>
@@ -47,8 +47,7 @@ function render(){
  const q=document.querySelector("#q").value.toLowerCase().trim(), a=document.querySelector("#audience").value, age=document.querySelector("#age").value,d=document.querySelector("#domain").value,l=document.querySelector("#lang").value;
  const out=data.filter(x=>(!q||x.slice(0,3).join(" ").toLowerCase().includes(q))&&(!a||x[3]===a)&&(!age||x[4]===age)&&(!d||x[2]===d)&&(!l||x[5]===l));
  document.querySelector("#count").textContent=out.length+"개 자료";
- document.querySelector("#grid").innerHTML=out.length?out.map(x=>'<article class="card"><div class="thumb '+x[8]+'">'+x[7]+'</div><div class="body"><span class="tag">'+x[2]+'</span><h2>'+x[0]+'</h2><p>'+x[1]+'</p><div class="meta"><span>'+x[6]+' · '+x[5]+'</span><span>'+x[3]+' · '+x[4]+'</span></div></div></article>').join(""):'<div class="empty">조건에 맞는 자료가 없습니다.</div>';
-}
+ document.querySelector("#grid").innerHTML=out.length?out.map(x=>{const id=data.indexOf(x)+1;return '<a class="card" href="resource-detail.html?id='+id+'"><div class="thumb '+x[8]+'">'+x[7]+'</div><div class="body"><span class="tag">'+x[2]+'</span><h2>'+x[0]+'</h2><p>'+x[1]+'</p><div class="meta"><span>'+x[6]+' · '+x[5]+'</span><span>'+x[3]+' · '+x[4]+'</span></div></div></a>';}).join(''):'<div class="empty">조건에 맞는 자료가 없습니다.</div>';
 render();
 </script>
 </body></html>
