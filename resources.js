@@ -23,15 +23,16 @@ function finishLoad(rows){
   renderLive();
 }
 function loadViaApi(){
-  return fetch(DATA_API,{cache:"no-store"})
-    .then(res=>{if(!res.ok)throw new Error("load failed");return res.text();})
-    .then(text=>{
-      const match=text.trim().match(/^[A-Za-z_$][0-9A-Za-z_$]*(?:\\.[A-Za-z_$][0-9A-Za-z_$]*)*\\(([\\s\\S]*)\\);?$/);
-      if(!match)throw new Error("invalid response");
-      const rows=JSON.parse(match[1]);
-      if(!Array.isArray(rows))throw new Error("invalid data");
-      return rows;
-    });
+  return new Promise((resolve,reject)=>{
+    const callback="eceCallback_"+Date.now();
+    const script=document.createElement("script");
+    const timer=setTimeout(()=>{cleanup();reject(new Error("API timeout"));},10000);
+    function cleanup(){clearTimeout(timer);delete window[callback];script.remove();}
+    window[callback]=(rows)=>{cleanup();resolve(rows);};
+    script.onerror=()=>{cleanup();reject(new Error("API error"));};
+    script.src=DATA_API+"?callback="+callback+"&_="+Date.now();
+    document.head.appendChild(script);
+  });
 }
 async function loadResources(){
   try{
