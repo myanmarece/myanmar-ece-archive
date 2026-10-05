@@ -5,15 +5,25 @@
 :root{--ink:#263238;--muted:#68777d;--pink:#f58ba5;--cream:#fffaf5;--line:#e8e2dc;--white:#fff}
 *{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif}a{text-decoration:none;color:inherit}
 .header{height:74px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 5vw}.brand{font-weight:800;display:flex;gap:10px;align-items:center}.logo{width:40px;height:40px;border-radius:13px;background:#f7b7c6;display:grid;place-items:center}.brand small{display:block;color:#929a9d;font-size:10px}.back{font-size:13px;color:#bd6079;font-weight:800}
-.wrap{max-width:1000px;margin:auto;padding:48px 24px}.crumb{font-size:12px;color:#bd6079;font-weight:800;margin-bottom:20px}.detail{background:#fff;border:1px solid var(--line);border-radius:24px;overflow:hidden}.hero{padding:34px;background:linear-gradient(120deg,#fff0f4,#fff8eb,#eaf5fb)}.tag{display:inline-block;background:#fff;border-radius:99px;padding:5px 10px;font-size:11px;font-weight:800}.hero h1{font-size:36px;line-height:1.3;margin:14px 0 8px;letter-spacing:-.04em}.desc{color:var(--muted);margin:0}.content{padding:32px}.meta{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:30px}.item{border:1px solid var(--line);border-radius:14px;padding:14px}.item span{display:block;font-size:10px;color:#8a9395;margin-bottom:3px}.item strong{font-size:13px}.actions{display:flex;gap:10px;margin-bottom:34px}.btn{padding:12px 18px;border-radius:12px;font-weight:800;font-size:13px}.primary{background:var(--pink);color:#fff}.disabled{background:#f2efec;color:#9a9692;cursor:not-allowed}.section-title{font-size:18px;margin:0 0 14px}.related{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.rel{border:1px solid var(--line);border-radius:16px;padding:16px}.rel b{font-size:14px}.rel p{font-size:11px;color:var(--muted);margin:6px 0 0}@media(max-width:700px){.meta{grid-template-columns:1fr 1fr}.related{grid-template-columns:1fr}.hero h1{font-size:29px}}
+.wrap{max-width:1100px;margin:auto;padding:42px 20px}.crumb{font-size:12px;color:#bd6079;font-weight:800;margin-bottom:18px}.detail{background:#fff;border:1px solid var(--line);border-radius:24px;overflow:hidden}.hero{padding:32px;background:linear-gradient(120deg,#fff0f4,#fff8eb,#eaf5fb)}.tag{display:inline-block;background:#fff;border-radius:99px;padding:5px 10px;font-size:11px;font-weight:800}.hero h1{font-size:34px;line-height:1.3;margin:14px 0 8px;letter-spacing:-.04em}.desc{color:var(--muted);margin:0}.content{padding:28px}.meta{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px}.item{border:1px solid var(--line);border-radius:14px;padding:14px}.item span{display:block;font-size:10px;color:#8a9395;margin-bottom:3px}.item strong{font-size:13px}.actions{display:flex;gap:10px;margin:18px 0 28px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;padding:11px 17px;border-radius:12px;font-weight:800;font-size:13px;border:0;cursor:pointer}.primary{background:var(--pink);color:#fff}.secondary{background:#f2efec;color:#555}.disabled{background:#f2efec;color:#9a9692;cursor:not-allowed}.viewer-title{font-size:18px;margin:0 0 12px}.viewer{width:100%;height:min(78vh,900px);min-height:560px;border:1px solid var(--line);border-radius:16px;background:#f5f3f0;overflow:hidden}.viewer iframe{width:100%;height:100%;border:0;background:#fff}.viewer-empty{height:100%;display:grid;place-items:center;padding:30px;text-align:center;color:var(--muted)}.viewer-empty p{margin:8px 0 0;font-size:13px}.info{margin-top:26px;padding-top:22px;border-top:1px solid var(--line)}@media(max-width:700px){.meta{grid-template-columns:1fr 1fr}.hero h1{font-size:28px}.viewer{min-height:65vh;height:65vh}.wrap{padding:28px 12px}.content{padding:20px}}
 </style></head>
 <body>
 <header class="header"><a class="brand" href="index.html"><span class="logo">🌱</span><span>Myanmar ECE Archive<small>미얀마 유아교육 자료 아카이브</small></span></a><a class="back" href="resources.html">← 자료실</a></header>
-<main class="wrap"><div class="crumb">RESOURCE LIBRARY / DETAIL</div><article class="detail" id="detail"></article></main>
+<main class="wrap"><div class="crumb">RESOURCE LIBRARY / VIEW</div><article class="detail" id="detail"></article></main>
 <script>
 const SHEET_ID=window.ECE_SHEET_ID||""; const SHEET_NAME=window.ECE_SHEET_NAME||"Resources"; const DATA_API=window.ECE_DATA_API||"";
 const id=new URLSearchParams(location.search).get("id");
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+function driveFileId(url){
+  const s=String(url||"");
+  const m=s.match(/\/file\/d\/([a-zA-Z0-9_-]+)/)||s.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  return m?m[1]:"";
+}
+function isPdf(r){
+  const t=String(r.resource_type||"").toLowerCase();
+  const u=String(r.drive_url||"").toLowerCase();
+  return t.includes("pdf")||u.includes(".pdf");
+}
 async function getRows(){
   if(DATA_API){
     return new Promise((resolve,reject)=>{
@@ -41,8 +51,14 @@ async function load(){
     const list=await getRows();
     const r=list.find(x=>String(x.id)===String(id));
     if(!r){box.innerHTML='<section class="hero"><h1>자료를 찾을 수 없습니다.</h1></section>';return;}
-    const download=r.drive_url?'<a class="btn primary" href="'+esc(r.drive_url)+'" target="_blank" rel="noopener">Google Drive에서 열기</a>':'<span class="btn disabled">파일 준비 중</span>';
-    box.innerHTML='<section class="hero"><span class="tag">'+esc(r.domain||"자료")+'</span><h1>'+esc(r.title)+'</h1><p class="desc">'+esc(r.description||"")+'</p></section><section class="content"><div class="meta"><div class="item"><span>대상</span><strong>'+esc(r.audience||"-")+'</strong></div><div class="item"><span>연령</span><strong>'+esc(r.age||"전체")+'</strong></div><div class="item"><span>언어</span><strong>'+esc(r.language||"-")+'</strong></div><div class="item"><span>자료 유형</span><strong>'+esc(r.resource_type||"-")+'</strong></div></div><div class="actions">'+download+'</div><h2 class="section-title">자료 정보</h2><p class="desc">저자/기관: '+esc(r.author||"-")+'</p><p class="desc">등록일: '+esc(r.created_at||"-")+'</p></section>';
+    const fileId=driveFileId(r.drive_url);
+    const viewer=isPdf(r)&&fileId
+      ? '<div class="viewer"><iframe src="https://drive.google.com/file/d/'+encodeURIComponent(fileId)+'/preview" title="'+esc(r.title)+' PDF 미리보기" allow="autoplay"></iframe></div>'
+      : '<div class="viewer"><div class="viewer-empty"><div><strong>이 자료 형식은 아직 내부 미리보기를 지원하지 않습니다.</strong><p>다운로드 버튼을 이용해 원본 자료를 열어주세요.</p></div></div></div>';
+    const download=r.drive_url
+      ? '<a class="btn primary" href="'+esc(r.drive_url)+'" target="_blank" rel="noopener">다운로드</a>'
+      : '<span class="btn disabled">파일 준비 중</span>';
+    box.innerHTML='<section class="hero"><span class="tag">'+esc(r.domain||"자료")+'</span><h1>'+esc(r.title)+'</h1><p class="desc">'+esc(r.description||"")+'</p></section><section class="content"><div class="meta"><div class="item"><span>대상</span><strong>'+esc(r.audience||"-")+'</strong></div><div class="item"><span>연령</span><strong>'+esc(r.age||"전체")+'</strong></div><div class="item"><span>언어</span><strong>'+esc(r.language||"-")+'</strong></div><div class="item"><span>자료 유형</span><strong>'+esc(r.resource_type||"-")+'</strong></div></div><div class="actions">'+download+'<a class="btn secondary" href="resources.html">← 뒤로가기</a></div><h2 class="viewer-title">자료 보기</h2>'+viewer+'<div class="info"><p class="desc">저자/기관: '+esc(r.author||"-")+'</p><p class="desc">등록일: '+esc(r.created_at||"-")+'</p></div></section>';
   }catch(e){box.innerHTML='<section class="hero"><h1>자료를 불러오지 못했습니다.</h1><p class="desc">Google Sheet 연결 설정을 확인해 주세요.</p></section>';}
 }
 function parseCSV(text){
@@ -57,4 +73,4 @@ function parseCSV(text){
   return rows;
 }
 document.addEventListener("DOMContentLoaded",load);
-</script><script>window.ECE_DATA_API="https://script.google.com/macros/s/AKfycbzlcTYhKfYywLck8Fumb1AnWAuT8Z5kxj0PFQmt2nSgkpuBpTvhZzlI57MkG1Ua-LQt/exec";</script><script>window.ECE_SHEET_ID="12wiXS18mGf1h_xNTpyY_6P6beMd5uTWFTI7JfhO79HQ";window.ECE_SHEET_NAME="Resources";</script></body></html>
+</script><script>window.ECE_DATA_API="https://script.google.com/macros/s/AKfycbzlcTYHkFYywLck8Fumb1AnWAuT8Z5kxj0PFQmt2nSgkpuBpTvhZzlI57MkG1Ua-LQt/exec";</script><script>window.ECE_SHEET_ID="12wiXS18mGf1h_xNTpyY_6P6beMd5uTWFTI7JfhO79HQ";window.ECE_SHEET_NAME="Resources";</script></body></html>
