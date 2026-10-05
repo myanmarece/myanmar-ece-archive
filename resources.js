@@ -22,21 +22,20 @@ function finishLoad(rows){
   ["audience","age","domain","lang"].forEach(id=>document.querySelector("#"+id)?.addEventListener("change",renderLive));
   renderLive();
 }
-function loadViaJsonp(){
-  return new Promise((resolve,reject)=>{
-    const cb="eceResources_"+Date.now();
-    const script=document.createElement("script");
-    const timer=setTimeout(()=>{cleanup();reject(new Error("timeout"));},10000);
-    function cleanup(){clearTimeout(timer);delete window[cb];script.remove();}
-    window[cb]=data=>{cleanup();resolve(data);};
-    script.onerror=()=>{cleanup();reject(new Error("load failed"));};
-    script.src=DATA_API+(DATA_API.includes("?")?"&":"?")+"callback="+encodeURIComponent(cb);
-    document.head.appendChild(script);
-  });
+function loadViaApi(){
+  return fetch(DATA_API,{cache:"no-store"})
+    .then(res=>{if(!res.ok)throw new Error("load failed");return res.text();})
+    .then(text=>{
+      const match=text.trim().match(/^[A-Za-z_$][0-9A-Za-z_$]*(?:\\.[A-Za-z_$][0-9A-Za-z_$]*)*\\(([\\s\\S]*)\\);?$/);
+      if(!match)throw new Error("invalid response");
+      const rows=JSON.parse(match[1]);
+      if(!Array.isArray(rows))throw new Error("invalid data");
+      return rows;
+    });
 }
 async function loadResources(){
   try{
-    if(DATA_API){finishLoad(await loadViaJsonp());return;}
+    if(DATA_API){finishLoad(await loadViaApi());return;}
     if(!SHEET_ID)throw new Error("no source");
     const url="https://docs.google.com/spreadsheets/d/"+encodeURIComponent(SHEET_ID)+"/gviz/tq?tqx=out:csv&sheet="+encodeURIComponent(SHEET_NAME);
     const res=await fetch(url); if(!res.ok)throw new Error();
