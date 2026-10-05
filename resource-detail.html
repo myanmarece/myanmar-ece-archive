@@ -16,14 +16,16 @@ const id=new URLSearchParams(location.search).get("id");
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
 async function getRows(){
   if(DATA_API){
-    const res=await fetch(DATA_API,{cache:"no-store"});
-    if(!res.ok)throw new Error("load failed");
-    const text=(await res.text()).trim();
-    const match=text.match(/^[A-Za-z_$][0-9A-Za-z_$]*(?:\\.[A-Za-z_$][0-9A-Za-z_$]*)*\\(([\\s\\S]*)\\);?$/);
-    if(!match)throw new Error("invalid response");
-    const rows=JSON.parse(match[1]);
-    if(!Array.isArray(rows))throw new Error("invalid data");
-    return rows;
+    return new Promise((resolve,reject)=>{
+      const callback="eceDetailCallback_"+Date.now();
+      const script=document.createElement("script");
+      const timer=setTimeout(()=>{cleanup();reject(new Error("API timeout"));},10000);
+      function cleanup(){clearTimeout(timer);delete window[callback];script.remove();}
+      window[callback]=(rows)=>{cleanup();resolve(Array.isArray(rows)?rows:[]);};
+      script.onerror=()=>{cleanup();reject(new Error("API error"));};
+      script.src=DATA_API+"?callback="+callback+"&_="+Date.now();
+      document.head.appendChild(script);
+    });
   }
   if(!SHEET_ID) throw new Error("no source");
   const url="https://docs.google.com/spreadsheets/d/"+encodeURIComponent(SHEET_ID)+"/gviz/tq?tqx=out:csv&sheet="+encodeURIComponent(SHEET_NAME);
